@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="button_keypad">@color/primary_500</color>
+    <color name="primary_100">#BCE5FC</color>
+    <color name="primary_500">#03A9F4</color>
+    <color name="primary_700">#0288D1</color>
+    <color name="accent_100">#FF9E80</color>
+    <color name="accent_200">#FF6E40</color>
+    <color name="accent_400">#FF3000</color>
+</resources>

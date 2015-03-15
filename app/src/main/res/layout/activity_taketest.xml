@@ -1,0 +1,184 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="org.eurekachild.mathassessment.Taketest"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/rv1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/textview1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_700"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:textColor="#FFF"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tvOperand1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="35sp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tvOperand2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvOperand1"
+            android:layout_alignRight="@+id/tvOperand1"
+            android:textSize="35sp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tvOperator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvOperand1"
+            android:layout_toLeftOf="@+id/tvOperand1"
+            android:textSize="35sp"
+            android:text="" />
+
+        <LinearLayout
+            android:id="@+id/linearlayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/textview124"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/primary_500"
+                android:text=" " />
+
+            <TextView
+                android:id="@+id/tvAnswer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/accent_100"
+                android:gravity="center"
+                android:layout_weight="4"
+                android:maxLength="4"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="@dimen/text_answer" />
+
+            <TextView
+                android:id="@+id/textview123"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/primary_500"
+                android:text=" " />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gridviewkeypad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rv1"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:columnCount="3"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button1"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="1" />
+
+        <Button
+            android:id="@+id/button2"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/button3"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="3" />
+
+        <Button
+            android:id="@+id/button4"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/button5"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/button6"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="6" />
+
+        <Button
+            android:id="@+id/button7"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/button8"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/button9"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="9" />
+
+        <Button
+            android:id="@+id/button0"
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:text="0" />
+
+        <Button
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:id="@+id/buttonBkspc"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill"
+            android:text="BkSpc" />
+
+        <Button
+            android:textSize="@dimen/button_number_keypad"
+            android:textColor="@color/button_keypad"
+            android:id="@+id/buttonSubmit"
+            android:layout_columnSpan="3"
+            android:layout_gravity="fill"
+            android:text="Submit" />
+    </GridLayout>
+
+    <ImageView
+        android:id="@+id/iv1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"></ImageView>
+</LinearLayout>

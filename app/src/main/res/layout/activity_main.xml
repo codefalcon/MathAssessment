@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#0288D1"
+        android:gravity="center"
+        android:text="@string/test_setup"
+        android:textColor="#FFF"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_below="@id/textview1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_name"
+        android:textSize="25sp"
+        android:inputType="textPersonName|textCapWords|textNoSuggestions"
+        android:imeOptions="actionDone" />
+
+    <LinearLayout
+        android:id="@+id/linearlayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/etName">
+
+        <Button
+            android:id="@+id/butAdd"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="+"
+            android:textSize="125dp"
+            android:textColor="#FF6E40" />
+
+        <Button
+            android:id="@+id/butSub"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="125dp"
+            android:textColor="#FF6E40" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/linearlayout1">
+
+        <Button
+            android:id="@+id/butMul"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="x"
+            android:textSize="125dp"
+            android:clickable="true"
+            android:textColor="#FF6E40" />
+
+        <Button
+            style="?android:borderlessButtonStyle"
+            android:id="@+id/butDiv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="÷"
+            android:textSize="125dp"
+            android:textColor="#FF6E40" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textview2"
+        android:layout_below="@id/linearlayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_operator"
+        android:alpha="0.54"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:background="#0C000000" />
+</RelativeLayout>
