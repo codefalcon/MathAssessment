@@ -13,8 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 
 public class TakeTest extends Activity implements View.OnClickListener {
 
@@ -26,6 +24,9 @@ public class TakeTest extends Activity implements View.OnClickListener {
     AssignmentInfo assignment;
     MathEngine me;
     QuestionAnswer displayedQuestion;
+
+    boolean isQuotient;
+    int quotient;
 
     public static class QuestionAnswer {
         private static int id = 7001;
@@ -66,11 +67,19 @@ public class TakeTest extends Activity implements View.OnClickListener {
             else
                 return false;
         }
+
+        public boolean isCorrectResponse(int response, int rem) {
+            if (response == correctAnswer && rem == correctRemainder)
+                return true;
+            else
+                return false;
+        }
     }
 
     public static class QuestionResponse {
         QuestionAnswer question;
         int response;
+        int remainder = 0;
         boolean isCorrect;
 
         public boolean isCorrect() {
@@ -80,7 +89,15 @@ public class TakeTest extends Activity implements View.OnClickListener {
         QuestionResponse(QuestionAnswer qn, int studResponse) {
             question = qn;
             response = studResponse;
+            remainder = 0;
             isCorrect = qn.isCorrectResponse(response);
+        }
+
+        QuestionResponse(QuestionAnswer qn, int quotient, int rem) {
+            question = qn;
+            response = quotient;
+            remainder = rem;
+            isCorrect = qn.isCorrectResponse(response, remainder);
         }
     }
 
@@ -118,404 +135,6 @@ public class TakeTest extends Activity implements View.OnClickListener {
             numAnswered++;
         }
     }
-
-    public static class MathEngine {
-        int currentLevel;
-        int currentType;
-        int currentOperator;
-        boolean isInit;
-
-        Random r = new Random();
-
-        MathEngine() {
-            currentOperator = MainActivity.ADD;
-            currentLevel = 0;
-            currentType = 0;
-            isInit = true;
-        }
-
-        MathEngine(int operator) {
-            currentOperator = operator;
-            currentLevel = 0;
-            currentType = 0;
-            isInit = true;
-        }
-
-        public void initialize(int operator) {
-            currentOperator = operator;
-            currentLevel = 0;
-            currentType = 0;
-            isInit = true;
-        }
-
-        public boolean hasNextQuestion(boolean isPrevRespCorrect) {
-            if (!(isPrevRespCorrect || isInit))
-                return false;
-            return true;
-        }
-
-        //returns null if no Next Question
-        public QuestionAnswer getNextQuestion(boolean isPrevRespCorrect) {
-            switch (currentOperator) {
-                case MainActivity.ADD:
-                    return getNextAddQuestion(isPrevRespCorrect);
-                case MainActivity.SUB:
-                    return getNextSubQuestion(isPrevRespCorrect);
-                case MainActivity.MUL:
-                    return getNextMulQuestion(isPrevRespCorrect);
-                case MainActivity.DIV:
-                    break;
-            }
-            return null;
-        }
-
-        QuestionAnswer getNextAddQuestion(boolean isPrevRespCorrect) {
-            QuestionAnswer newQA = null;
-            if (isInit) {
-                isInit = false;
-                currentType = 1;
-                newQA = generateAddQn(currentType);
-            } else {
-                switch (currentType) {
-                    case 1://if Type 1, same level-> generate type 2
-                    case 3: //type 3, same level->generate type 4
-                    case 4: //type 4, same level->generate type 5
-                        currentType++;
-                        newQA = generateAddQn(currentType);
-                        break;
-                    case 2://type 2 has to be correct to generate type 3 + level up
-                    case 5://type5 has to be correct to generate type 6 + level up
-                    case 6://type6 has to be correct to generate type 7 + level up
-                        if (isPrevRespCorrect) {
-                            currentType++;
-                            currentLevel++;
-                            newQA = generateAddQn(currentType);
-                        }
-                        break;
-                }
-            }
-            return newQA;
-        }
-
-        private QuestionAnswer generateAddQn(int type) {
-            int op1;
-            int op2;
-            int digit;
-            QuestionAnswer newQA = null;
-
-            switch (type) {
-                case 1://1D + 1D
-                    op1 = getRandomNumber(1, 9);
-                    op2 = getRandomNumber(1, 9);
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.ADD);
-                    break;
-                case 2://2d + 2d w/o carry
-                    op1 = getRandomNumber(11, 88);
-                    while (op1 % 10 == 0) {
-                        op1 = getRandomNumber(11, 88);
-                    }
-                    op2 = getRandomNumberSum1D(op1 % 10);//Units digit
-                    digit = getRandomNumberSum1D(op1 / 10);//Tens digit
-                    op2 = digit * 10 + op2;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.ADD);
-                    break;
-                case 3://2D + 1D w/ or w/o carry
-                    op1 = getRandomNumber(10, 99);
-                    op2 = getRandomNumber(1, 9);
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.ADD);
-                    break;
-                case 4://2d + 2d with zero ending
-                    op1 = getRandomNumber(10, 99);
-                    if (op1 % 10 == 0) {//generate non zero ending
-                        op2 = getRandomNumber(11, 99);
-                        while (op2 % 10 == 0) {
-                            op2 = getRandomNumber(11, 99);
-                        }
-                    } else {//generate zero ending
-                        op2 = getRandomNumber(1, 9);
-                        op2 = op2 * 10;
-                    }
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.ADD);
-                    break;
-                case 5://2d + 2d w carry
-                    op1 = getRandomNumber(11, 99);
-                    op2 = getRandomNumberSum2D(op1 % 10);//units digit
-                    digit = getRandomNumber(1, 9);
-                    op2 = digit * 10 + op2;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.ADD);
-                    break;
-                case 6:
-                    digit = getRandomNumber(2, 5);
-                    newQA = generateAddQn(digit);
-                    break;
-                case 7:
-                    op1 = getRandomNumber(1, 9);
-                    op2 = getRandomNumberSum2D(op1);
-                    digit = getRandomNumber(1, 9);
-                    op1 = digit * 10 + op1;
-                    op2 = getRandomNumberSum2D(digit) * 10 + op2;
-                    digit = getRandomNumber(1, 9);
-                    op1 = digit * 100 + op1;
-                    op2 = getRandomNumberSum1D(digit) * 100 + op2;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.ADD);
-                    break;
-            }
-            return newQA;
-        }//generateAddQn
-
-        private int getRandomNumber(int low, int high) {
-            return (r.nextInt(high - low + 1) + low);
-        }
-
-        //Given a 1D +ve integer, generate a 1D random number such that the sum is also 1D
-        private int getRandomNumberSum1D(int given) {
-            if (given > 8 || given < 0) return 0;
-            return (r.nextInt(9 - given) + 1);
-        }
-
-        //Given a 1D +ve integer, generate a 1D random number such that the sum is 2D always
-        private int getRandomNumberSum2D(int given) {
-            if (given > 9 || given < 0) return 0;
-            int min = 10 - given;
-            return getRandomNumber(min, 9);
-        }
-
-        QuestionAnswer getNextSubQuestion(boolean isPrevRespCorrect) {
-            QuestionAnswer newQA = null;
-            if (isInit) {
-                isInit = false;
-                currentType = 1;
-                newQA = generateSubQn(currentType);
-            } else {
-                switch (currentType) {
-
-                    case 3: //type 3, same level->generate type 4
-                    case 4: //type 4, same level->generate type 5
-                        currentType++;
-                        newQA = generateSubQn(currentType);
-                        break;
-                    case 1://type 1 has to be correct to generate type 2 + level up
-                    case 2://type 2 has to be correct to generate type 3 + level up
-                    case 5://type5 has to be correct to generate type 6 + level up
-                    case 6://type6 has to be correct to generate type 7 + level up
-                        if (isPrevRespCorrect) {
-                            currentType++;
-                            currentLevel++;
-                            newQA = generateSubQn(currentType);
-                        }
-                        break;
-                }
-            }
-            return newQA;
-        }//getNextSubQuestion
-
-        private QuestionAnswer generateSubQn(int type) {
-            int op1;
-            int op2;
-            int digit;
-            QuestionAnswer newQA = null;
-
-            switch (type) {
-                case 1://1D - 1D
-                    op1 = getRandomNumber(1, 9);
-                    op2 = getRandomNumber(1, 9);
-                    while (op1 == op2) {
-                        op2 = getRandomNumber(1, 9);
-                    }
-                    if (op1 > op2)
-                        newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    else
-                        newQA = new QuestionAnswer(op2, op1, MainActivity.SUB);
-                    break;
-                case 2://2d-1d = 1d
-                    op1 = getRandomNumber(10, 18);
-                    digit = op1 - 10 + 1;
-                    op2 = getRandomNumber(digit, 9);
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    break;
-                case 3://2d-2d w/o borrow
-                    while (true) {
-                        op1 = getRandomNumber(11, 99);
-                        while (op1 % 10 == 0)
-                            op1 = getRandomNumber(11, 99);
-                        op2 = getRandomNumber(1, op1 % 10);
-                        digit = getRandomNumber(1, op1 / 10);
-                        op2 = digit * 10 + op2;
-                        if (op1 != op2) break;
-                    }
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    break;
-                case 4://2d-2d zero ending
-                    op1 = getRandomNumber(11, 99);
-                    while (op1 % 10 == 0)
-                        op1 = getRandomNumber(11, 99);
-                    op2 = getRandomNumber(1, op1 / 10);
-                    op2 *= 10;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    break;
-                case 5://2d-2d w borrow
-                    op1 = getRandomNumber(21, 88);
-                    op2 = getRandomNumber((op1 % 10) + 1, 9);
-                    digit = getRandomNumber(1, (op1 / 10) - 1);
-                    op2 = digit * 10 + op2;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    break;
-                case 6://3,4,5 or any 2d-1d
-                    digit = getRandomNumber(3, 6);
-                    if (digit == 6) {
-                        op1 = getRandomNumber(10, 99);
-                        op2 = getRandomNumber(1, 9);
-                        newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    } else {
-                        newQA = generateSubQn(digit);
-                    }
-                    break;
-                case 7://3d-3d with two levels borrow
-                    op1 = getRandomNumber(220, 998);
-                    op2 = getRandomNumber((op1 % 10) + 1, 9);
-                    digit = getRandomNumber(((op1 % 100) / 10), 9);
-                    op2 = digit * 10 + op2;
-                    digit = getRandomNumber(1, (op1 / 100) - 1);
-                    op2 = digit * 100 + op2;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.SUB);
-                    break;
-            }
-            return newQA;
-        }//generateSubQn
-
-        QuestionAnswer getNextMulQuestion(boolean isPrevRespCorrect) {
-            QuestionAnswer newQA = null;
-            if (isInit) {
-                isInit = false;
-                currentType = 1;
-                newQA = generateMulQn(currentType);
-            } else {
-                switch (currentType) {
-
-                    case 2://type 2, same level->generate type 3
-                    case 4: //type 4, same level->generate type 5
-                        currentType++;
-                        newQA = generateMulQn(currentType);
-                        break;
-                    case 1://type 1 has to be correct to generate type 2 + level up
-                    case 3: //type 3 has to be correct to generate type 4 + level up
-                    case 5://type 5 has to be correct to generate type 6 + level up
-                    case 6://type 6 has to be correct to generate type 7 + level up
-                        if (isPrevRespCorrect) {
-                            currentType++;
-                            currentLevel++;
-                            newQA = generateMulQn(currentType);
-                        }
-                        break;
-                }
-            }
-            return newQA;
-        }//getNextMulQuestion
-
-        private QuestionAnswer generateMulQn(int type) {
-            int op1;
-            int op2;
-            int digit;
-            QuestionAnswer newQA = null;
-
-            switch (type) {
-                case 1://1D x 1D <= 5
-                    op1 = getRandomNumber(1, 5);
-                    op2 = getRandomNumber(1, 5);
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.MUL);
-                    break;
-                case 2://1d x 1d
-                    op1 = getRandomNumber(1, 9);
-                    op2 = getRandomNumber(1, 9);
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.MUL);
-                    break;
-                case 3://2d x 1d w/o carry
-                    op1 = getRandomNumber(1, 5);
-                    op2 = getRandomMul1D(op1);
-                    op1 = getRandomNumber(1, 9) * 10 + op1;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.MUL);
-                    break;
-                case 4://2d x 1d with carry
-                    op1 = getRandomNumber(2, 9);
-                    op2 = getRandomMul2D(op1);
-                    op1 = getRandomNumber(1, 9) * 10 + op1;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.MUL);
-                    break;
-                case 5://2dx2d or 2dx1d w zero ending
-                    op1 = getRandomNumber(1, 9);
-                    op1 = op1 * 10;
-                    op2 = getRandomNumber(1, 99);
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.MUL);
-                    break;
-                case 6://2d x 2d w carry
-                    op1 = getRandomNumber(2, 9);
-                    op2 = getRandomMul2D(op1);
-                    digit = getRandomNumber(2, 9);
-                    op1 = digit * 10 + op1;
-                    digit = getRandomMul2D(digit);
-                    op2 = digit * 10 + op2;
-                    newQA = new QuestionAnswer(op1, op2, MainActivity.MUL);
-                    break;
-                case 7://random from 4,5,6
-                    digit = getRandomNumber(4, 6);
-                    newQA = generateMulQn(digit);
-                    break;
-            }
-            return newQA;
-        }//generateMulQn
-
-        //Given a 1D +ve integer, generate a 1D random number such that the mul is also 1D
-        int getRandomMul1D(int digit) {
-            int num = 0;
-            switch (digit) {
-                case 1:
-                    num = getRandomNumber(1, 9);
-                    break;
-                case 2:
-                    num = getRandomNumber(1, 4);
-                    break;
-                case 3:
-                    num = getRandomNumber(1, 3);
-                    break;
-                case 4:
-                    num = getRandomNumber(1, 2);
-                    break;
-                default:
-                    if (digit < 10)
-                        num = 1;
-                    else
-                        num = 0;//error condition
-                    break;
-            }
-            return num;
-        }
-
-        //Given a 1D +ve integer, generate a 1D random number such that the mul is always 2D
-        int getRandomMul2D(int digit) {
-            int num = 0;
-            switch (digit) {
-                case 1:
-                    num = 0;//error condition
-                    break;
-                case 2:
-                    num = getRandomNumber(5, 9);
-                    break;
-                case 3:
-                    num = getRandomNumber(4, 9);
-                    break;
-                case 4:
-                    num = getRandomNumber(3, 9);
-                    break;
-                default:
-                    if (digit < 10)
-                        num = getRandomNumber(2, 9);
-                    else
-                        num = 0;//error condition
-                    break;
-            }
-            return num;
-        }
-    }//MathEngine
 
     @Override
     public void onClick(View v) {
@@ -559,9 +178,30 @@ public class TakeTest extends Activity implements View.OnClickListener {
                 break;
             case R.id.buttonSubmit:
                 String ans = (String) text.getText();
-
+                QuestionResponse qr;
                 if (!ans.isEmpty()) {
-                    QuestionResponse qr = new QuestionResponse(displayedQuestion, Integer.parseInt(ans));
+                    if (displayedQuestion.operator == MainActivity.DIV) {
+                        if (isQuotient) {
+                            isQuotient = false;
+                            TextView t1 = (TextView) findViewById(R.id.textview123);
+                            t1.setText("← Remainder");
+                            t1 = (TextView) findViewById(R.id.textview124);
+                            t1.setText("Remainder →");
+                            text.setText("");
+                            quotient = Integer.parseInt(ans);
+                            Toast.makeText(TakeTest.this, "Enter Remainder", Toast.LENGTH_LONG).show();
+                            break;
+                        } else {
+                            qr = new QuestionResponse(displayedQuestion, quotient, Integer.parseInt(ans));
+                            TextView t1 = (TextView) findViewById(R.id.textview123);
+                            t1.setText("← Quotient");
+                            t1 = (TextView) findViewById(R.id.textview124);
+                            t1.setText("Quotient →");
+                            quotient = Integer.parseInt(ans);
+                            isQuotient = true;
+                        }
+                    } else
+                        qr = new QuestionResponse(displayedQuestion, Integer.parseInt(ans));
                     assignment.addStudentResponse(qr);
                     QuestionAnswer qa;
                     if (qr.isCorrect) {
@@ -661,6 +301,11 @@ public class TakeTest extends Activity implements View.OnClickListener {
                 break;
             case MainActivity.DIV:
                 text.setText("Division - " + name);
+                TextView t1 = (TextView) findViewById(R.id.textview123);
+                t1.setText("← Quotient");
+                t1 = (TextView) findViewById(R.id.textview124);
+                t1.setText("Quotient →");
+                isQuotient = true;
                 break;
         }
 

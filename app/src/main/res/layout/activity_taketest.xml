@@ -64,7 +64,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:background="@color/primary_500"
-                android:text=" " />
+                android:text="Answer →"
+                android:textSize="20dp"
+                android:alpha="0.54"
+                android:gravity="right|center_vertical" />
 
             <TextView
                 android:id="@+id/tvAnswer"
@@ -84,7 +87,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:background="@color/primary_500"
-                android:text=" " />
+                android:text="← Answer"
+                android:textSize="20dp"
+                android:alpha="0.54"
+                android:gravity="left|center_vertical" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -175,10 +181,12 @@
             android:text="Submit" />
     </GridLayout>
 
-    <ImageView
-        android:id="@+id/iv1"
+    <org.eurekachild.mathassessment.SingleTouchEventView
+        android:id="@+id/stev1"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_gravity="center"></ImageView>
+        android:layout_gravity="center"
+        android:alpha="0.54"
+        android:text="Use this space for rough work"></org.eurekachild.mathassessment.SingleTouchEventView>
 </LinearLayout>
