@@ -1,5 +1,7 @@
 package org.eurekachild.mathassessment;
 
+import android.util.Log;
+
 import java.util.Random;
 
 import static org.eurekachild.mathassessment.TakeTest.QuestionAnswer;
@@ -30,9 +32,7 @@ public class MathEngine {
     }
 
     public boolean hasNextQuestion(boolean isPrevRespCorrect) {
-        if (!(isPrevRespCorrect || isInit))
-            return false;
-        return true;
+        return (isPrevRespCorrect || isInit);
     }
 
     //returns null if no Next Question
@@ -145,7 +145,12 @@ public class MathEngine {
     }//generateAddQn
 
     private int getRandomNumber(int low, int high) {
-        return (r.nextInt(high - low + 1) + low);
+        try {
+            return (r.nextInt(high - low + 1) + low);
+        } catch (IllegalArgumentException e) {
+            Log.w(MathEngine.class.getName(), Integer.toString(low) + ":" + Integer.toString(high));
+        }
+        return 0;
     }
 
     //Given a 1D +ve integer, generate a 1D random number such that the sum is also 1D
@@ -471,7 +476,7 @@ public class MathEngine {
                 newQA = generateType6n7bDiv(true);
                 break;
             case 7://3D ÷ 1D - with zero in quotient and dividend (332/3)
-                if (getRandomNumber(0, 1) == 0)
+                if (getRandomNumber(1, 2) == 1)
                     newQA = generateType5n7aDiv(false);
                 else
                     newQA = generateType6n7bDiv(false);

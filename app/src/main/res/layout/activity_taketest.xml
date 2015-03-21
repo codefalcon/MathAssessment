@@ -187,6 +187,5 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center"
-        android:alpha="0.54"
-        android:text="Use this space for rough work"></org.eurekachild.mathassessment.SingleTouchEventView>
+        android:alpha="0.54"></org.eurekachild.mathassessment.SingleTouchEventView>
 </LinearLayout>

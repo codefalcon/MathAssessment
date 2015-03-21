@@ -1,10 +1,15 @@
 package org.eurekachild.mathassessment;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +32,8 @@ public class TakeTest extends Activity implements View.OnClickListener {
 
     boolean isQuotient;
     int quotient;
+
+    AssignmentDbHelper dbHelper;
 
     public static class QuestionAnswer {
         private static int id = 7001;
@@ -62,17 +69,11 @@ public class TakeTest extends Activity implements View.OnClickListener {
         }
 
         public boolean isCorrectResponse(int response) {
-            if (response == correctAnswer)
-                return true;
-            else
-                return false;
+            return (response == correctAnswer);
         }
 
         public boolean isCorrectResponse(int response, int rem) {
-            if (response == correctAnswer && rem == correctRemainder)
-                return true;
-            else
-                return false;
+            return (response == correctAnswer && rem == correctRemainder);
         }
     }
 
@@ -217,22 +218,30 @@ public class TakeTest extends Activity implements View.OnClickListener {
                         displayQuestion(qa);
                     } else {
                         Toast.makeText(TakeTest.this, "Well done!", Toast.LENGTH_LONG).show();
+                        // Start lengthy operation in a background thread
+                        new Thread(new Runnable() {
+                            public void run() {
+                                writeAssignmentToDb(assignment, displayedQuestion.operator);
+                                deleteAssignmentAboveLimit();
+                                readStudentInfoFromDb();
+//                                while (mProgressStatus < 100) {
+//                                    mProgressStatus = doWork();
+//
+//                                    // Update the progress bar
+//                                    mHandler.post(new Runnable() {
+//                                        public void run() {
+//                                            mProgress.setProgress(mProgressStatus);
+//                                        }
+//                                    });
+//                                }
+                            }
+                        }).start();
                         finish();
                     }
                     text.setText("");
                 } else
                     Toast.makeText(TakeTest.this, "Please enter your answer", Toast.LENGTH_LONG).show();
                 break;
-        }
-    }
-
-    private void beginTest(int operator, String name) {
-        student = new StudentInfo(name);
-        assignment = new AssignmentInfo(student);
-        me = new MathEngine(operator);
-        QuestionAnswer qa = me.getNextQuestion(false);
-        if (qa != null) {
-            displayQuestion(qa);
         }
     }
 
@@ -312,6 +321,10 @@ public class TakeTest extends Activity implements View.OnClickListener {
         setupListeners();
         setupSound();
 
+        dbHelper = AssignmentDbHelper.getHelper(getApplicationContext());
+        //SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //dbHelper.onDowngrade(db,1,2);
+
         beginTest(operator, name);
     }
 
@@ -363,6 +376,187 @@ public class TakeTest extends Activity implements View.OnClickListener {
         soundID[2] = soundPool.load(this, R.raw.clapcheer2sec, 1);
         soundID[3] = soundPool.load(this, R.raw.claphighcheer2sec, 1);
         soundID[4] = soundPool.load(this, R.raw.fireworks3sec, 1);
+    }
+
+    private void beginTest(int operator, String name) {
+        student = new StudentInfo(name);
+        assignment = new AssignmentInfo(student);
+        me = new MathEngine(operator);
+
+        //writeStudentInfoToDb(student);
+
+        QuestionAnswer qa = me.getNextQuestion(false);
+        if (qa != null) {
+            displayQuestion(qa);
+        }
+    }
+
+    boolean writeAssignmentToDb(AssignmentInfo assignment, int operator) {
+        Uri uri, returnUri;
+        int id;
+
+        //Write student info
+        uri = AssignmentContentProvider.STUDENT_INFO_URI;
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_ID, assignment.student.studentID);
+        values.put(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_NAME, assignment.student.studentName);
+
+        returnUri = getContentResolver().insert(uri, values);
+        id = Integer.parseInt(returnUri.getLastPathSegment());
+
+        //Write assignment overview
+        uri = AssignmentContentProvider.ASSIGNMENT_LIST_URI;
+
+        // Create a new map of values, where column names are the keys
+        ContentValues listvalues = new ContentValues();
+        listvalues.put(AssignmentContract.AssignmentListTable.COLUMN_NAME_ASSIGN_ID, assignment.assignmentID);
+        listvalues.put(AssignmentContract.AssignmentListTable.COLUMN_NAME_STUDENT_ID, id);
+        listvalues.put(AssignmentContract.AssignmentListTable.COLUMN_NAME_OPERATOR, getOperatorName(operator));
+
+        returnUri = getContentResolver().insert(uri, listvalues);
+
+        id = Integer.parseInt(returnUri.getLastPathSegment());
+
+        //Write assignment detail
+        uri = AssignmentContentProvider.ASSIGNMENT_DETAIL_URI;
+        int numEntries = assignment.studentResponse.size();
+        ContentValues detailValues[] = new ContentValues[numEntries];
+
+        // Create a new map of values, where column names are the keys
+        QuestionResponse qr;
+        for (int i = 0; i < numEntries; i++) {
+            qr = assignment.studentResponse.get(i);
+            detailValues[i] = new ContentValues();
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_ASSIGN_ID, id);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OP1, qr.question.operand1);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OPERATOR, qr.question.operator);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OP2, qr.question.operand2);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_RESPONSE, qr.response);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_REMAINDER, qr.remainder);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_CORRECT_RESPONSE, qr.question.correctAnswer);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_CORRECT_REMAINDER, qr.question.correctRemainder);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_ISCORRECT, qr.isCorrect() ? 1 : 0);
+        }
+        getContentResolver().bulkInsert(uri, detailValues);
+
+        return false;
+    }
+
+    String getOperatorName(int operator) {
+        switch (operator) {
+            case MainActivity.ADD:
+                return "+";
+            case MainActivity.SUB:
+                return "-";
+            case MainActivity.MUL:
+                return "x";
+            case MainActivity.DIV:
+                return "÷";
+        }
+        return "";
+    }
+
+    boolean deleteAssignmentAboveLimit() {
+        int LIMIT = 10;
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                AssignmentContract.AssignmentListTable._ID,
+                AssignmentContract.AssignmentListTable.COLUMN_NAME_STUDENT_ID
+        };
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder = AssignmentContract.AssignmentListTable._ID + " ASC";
+        Cursor c = getContentResolver().query(AssignmentContentProvider.ASSIGNMENT_LIST_URI, projection, null, null, sortOrder);
+        c.moveToFirst();
+        int assignmentid, studentid;
+        int count = c.getCount();
+        //if number of entries is above LIMIT
+        while (count-- > LIMIT && !c.isAfterLast()) {
+            assignmentid = c.getInt(
+                    c.getColumnIndexOrThrow(AssignmentContract.StudentInfoTable._ID)
+            );
+            studentid = c.getInt(
+                    c.getColumnIndexOrThrow(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_ID)
+            );
+
+            getContentResolver().delete(AssignmentContentProvider.ASSIGNMENT_DETAIL_URI,
+                    AssignmentContract.AssignmentDetailTable.COLUMN_NAME_ASSIGN_ID + " = " + Integer.toString(assignmentid),
+                    null
+            );
+
+            Uri assignmentUri = Uri.parse(AssignmentContentProvider.ASSIGNMENT_LIST_URI + "/" + Integer.toString(assignmentid));
+            getContentResolver().delete(assignmentUri, null, null);
+
+            Uri studUri = Uri.parse(AssignmentContentProvider.STUDENT_INFO_URI + "/" + Integer.toString(studentid));
+            getContentResolver().delete(studUri, null, null);
+            c.moveToNext();
+        }
+        c.close();
+        return true;
+    }
+
+    void writeStudentInfoToDb(StudentInfo s) {
+
+        SQLiteDatabase db = dbHelper.openDb();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_ID, s.studentID);
+        values.put(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_NAME, s.studentName);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId;
+        newRowId = db.insert(
+                AssignmentContract.StudentInfoTable.TABLE_NAME,
+                null,
+                values);
+    }
+
+    void readStudentInfoFromDb() {
+        SQLiteDatabase db = dbHelper.openDb();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                AssignmentContract.StudentInfoTable._ID,
+                AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_ID,
+                AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_NAME
+        };
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                AssignmentContract.StudentInfoTable._ID + " DESC";
+        Cursor c = db.query(
+                AssignmentContract.StudentInfoTable.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+        Log.w(TakeTest.class.getName(), "after query");
+        c.moveToFirst();
+        int id;
+//        int studId;
+        String name;
+        while (!c.isAfterLast()) {
+            id = c.getInt(
+                    c.getColumnIndexOrThrow(AssignmentContract.StudentInfoTable._ID)
+            );
+//            studId = c.getInt(
+//                    c.getColumnIndexOrThrow(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_ID)
+//            );
+            name = c.getString(
+                    c.getColumnIndexOrThrow(AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_NAME)
+            );
+            c.moveToNext();
+            Log.w(TakeTest.class.getName(), id + ":" + name);
+        }
+        c.close();
     }
 
     @Override
