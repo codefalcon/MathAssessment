@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -25,15 +26,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
         EditText name = (EditText) findViewById(R.id.etName);
         switch (v.getId()) {
             case R.id.butAdd:
+                if (name.getText().toString().isEmpty()) break;
                 launchTakeTestActivity(name.getText().toString(), ADD);
                 break;
             case R.id.butSub:
+                if (name.getText().toString().isEmpty()) break;
                 launchTakeTestActivity(name.getText().toString(), SUB);
                 break;
             case R.id.butMul:
+                if (name.getText().toString().isEmpty()) break;
                 launchTakeTestActivity(name.getText().toString(), MUL);
                 break;
             case R.id.butDiv:
+                if (name.getText().toString().isEmpty()) break;
                 launchTakeTestActivity(name.getText().toString(), DIV);
                 break;
             case R.id.butSummary:
@@ -44,6 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
         }
+        Toast.makeText(MainActivity.this, "Please enter student name.", Toast.LENGTH_SHORT).show();
     }
 
     private void launchTakeTestActivity(String name, int operator) {
