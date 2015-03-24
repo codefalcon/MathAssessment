@@ -99,4 +99,37 @@
         android:gravity="center"
         android:textSize="20sp"
         android:background="#0C000000" />
+
+    <TextView
+        android:id="@+id/tvSeparator"
+        android:layout_below="@id/textview2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#0288D1"
+        android:gravity="center"
+        android:text="@string/assignment_actions"
+        android:textColor="#FFF"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/butSummary"
+        android:layout_below="@id/tvSeparator"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/button_number_keypad"
+        android:textColor="@color/button_keypad"
+        android:text="Summary"
+        android:drawableLeft="@drawable/summary" />
+
+    <Button
+        android:id="@+id/butExit"
+        android:layout_below="@id/butSummary"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/button_number_keypad"
+        android:textColor="@color/button_keypad"
+        android:text="Exit"
+        android:drawableLeft="@drawable/exit" />
 </RelativeLayout>

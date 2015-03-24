@@ -36,6 +36,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.butDiv:
                 launchTakeTestActivity(name.getText().toString(), DIV);
                 break;
+            case R.id.butSummary:
+                Intent intentSummary = new Intent(this, Summary.class);
+                startActivity(intentSummary);
+                break;
+            case R.id.butExit:
+                finish();
+                break;
         }
     }
 
@@ -54,11 +61,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Button sub = (Button) findViewById(R.id.butSub);
         Button mul = (Button) findViewById(R.id.butMul);
         Button div = (Button) findViewById(R.id.butDiv);
+        Button summary = (Button) findViewById(R.id.butSummary);
+        Button exit = (Button) findViewById(R.id.butExit);
 
         add.setOnClickListener(this);
         sub.setOnClickListener(this);
         mul.setOnClickListener(this);
         div.setOnClickListener(this);
+        summary.setOnClickListener(this);
+        exit.setOnClickListener(this);
     }
 
 

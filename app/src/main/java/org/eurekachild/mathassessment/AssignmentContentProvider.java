@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-
 /**
  * Created by safiq on 18-03-2015.
  */
@@ -29,6 +28,8 @@ public class AssignmentContentProvider extends ContentProvider {
     private static final int ASSIGNMENT_DETAIL = 50;
     private static final int ASSIGNMENT_DETAIL_ID = 60;
 
+    private static final int STUDENT_LIST = 70; //for student and assignment list union query
+
     private static final String AUTHORITY = "org.eurekachild.mathassessment.provider.assignmentcontentprovider";
 
 
@@ -38,6 +39,8 @@ public class AssignmentContentProvider extends ContentProvider {
             + "/" + AssignmentContract.AssignmentListTable.TABLE_NAME);
     public static final Uri ASSIGNMENT_DETAIL_URI = Uri.parse("content://" + AUTHORITY
             + "/" + AssignmentContract.AssignmentDetailTable.TABLE_NAME);
+    public static final Uri STUDENT_LIST_URI = Uri.parse("content://" + AUTHORITY
+            + "/" + AssignmentContract.StudentInfoTable.TABLE_NAME + AssignmentContract.AssignmentListTable.TABLE_NAME);
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -54,6 +57,10 @@ public class AssignmentContentProvider extends ContentProvider {
                 AssignmentContract.AssignmentDetailTable.TABLE_NAME, ASSIGNMENT_DETAIL);
         sUriMatcher.addURI(AUTHORITY,
                 AssignmentContract.AssignmentDetailTable.TABLE_NAME + "/#", ASSIGNMENT_DETAIL_ID);
+        sUriMatcher.addURI(AUTHORITY,
+                AssignmentContract.StudentInfoTable.TABLE_NAME
+                        + AssignmentContract.AssignmentListTable.TABLE_NAME,
+                STUDENT_LIST);
     }
 
     @Override
@@ -91,11 +98,11 @@ public class AssignmentContentProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
 
         // Uisng SQLiteQueryBuilder instead of query() method
+        SQLiteDatabase db = dbHelper.openDb();
+        Cursor cursor = null;
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-
         // check if the caller has requested a column which does not exists
         //checkColumns(projection);
-
         int uriType = sUriMatcher.match(uri);
         switch (uriType) {
             case STUDENT_INFO:
@@ -128,13 +135,25 @@ public class AssignmentContentProvider extends ContentProvider {
                 queryBuilder.appendWhere(AssignmentContract.AssignmentDetailTable._ID + "="
                         + uri.getLastPathSegment());
                 break;
+            case STUDENT_LIST:
+                final String STUDENT_LIST_QUERY =
+                        "SELECT a.*, s."
+                                + AssignmentContract.StudentInfoTable.COLUMN_NAME_STUDENT_NAME
+                                + " FROM "
+                                + AssignmentContract.AssignmentListTable.TABLE_NAME + " a INNER JOIN "
+                                + AssignmentContract.StudentInfoTable.TABLE_NAME + " s ON a."
+                                + AssignmentContract.AssignmentListTable.COLUMN_NAME_STUDENT_ID + "=s."
+                                + AssignmentContract.StudentInfoTable._ID;
+                //Log.w(AssignmentContentProvider.class.getName(),STUDENT_LIST_QUERY);
+                cursor = db.rawQuery(STUDENT_LIST_QUERY, null);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
-        SQLiteDatabase db = dbHelper.openDb();
-        Cursor cursor = queryBuilder.query(db, projection, selection,
-                selectionArgs, null, null, sortOrder);
+        if (cursor == null)
+            cursor = queryBuilder.query(db, projection, selection,
+                    selectionArgs, null, null, sortOrder);
         // make sure that potential listeners are getting notified
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 

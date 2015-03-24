@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvAnsOp1"
+        android:textSize="30sp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|right|end"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvAnsOper"
+        android:textSize="30sp"
+        android:textColor="@color/accent_200"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvAnsOp2"
+        android:textSize="30sp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|end|right"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvAnsEquals"
+        android:textSize="30sp"
+        android:textColor="@color/accent_200"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="="
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvAnsResp"
+        android:textSize="30sp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|right"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvAnsRem"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/tvAnsIcon"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="right|center_vertical"
+        android:src="@drawable/tick" />
+</LinearLayout>

@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -291,11 +292,14 @@ public class TakeTest extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         Intent intent = getIntent();
         String name = intent.getStringExtra(MainActivity.EXTRA_NAME);
         int operator = intent.getIntExtra(MainActivity.EXTRA_OPERATOR, 0);
 
         setContentView(R.layout.activity_taketest);
+
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView text = (TextView) findViewById(R.id.textview1);
         switch (operator) {
@@ -431,7 +435,7 @@ public class TakeTest extends Activity implements View.OnClickListener {
             detailValues[i] = new ContentValues();
             detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_ASSIGN_ID, id);
             detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OP1, qr.question.operand1);
-            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OPERATOR, qr.question.operator);
+            detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OPERATOR, getOperatorName(qr.question.operator));
             detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_OP2, qr.question.operand2);
             detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_RESPONSE, qr.response);
             detailValues[i].put(AssignmentContract.AssignmentDetailTable.COLUMN_NAME_REMAINDER, qr.remainder);
@@ -562,7 +566,7 @@ public class TakeTest extends Activity implements View.OnClickListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.menu_taketest, menu);
+        getMenuInflater().inflate(R.menu.menu_taketest, menu);
         return true;
     }
 
@@ -575,6 +579,10 @@ public class TakeTest extends Activity implements View.OnClickListener {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
 
