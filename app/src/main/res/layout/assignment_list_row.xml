@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tvStudentName"
-        android:textSize="30sp"
+        android:textSize="@dimen/fragment_row"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_centerInParent="true"
@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/tvOperator"
-        android:textSize="30sp"
+        android:textSize="@dimen/fragment_row"
         android:textColor="@color/accent_200"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

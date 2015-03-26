@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/enter_name"
         android:textSize="25sp"
+        android:maxLength="10"
         android:inputType="textPersonName|textCapWords|textNoSuggestions"
         android:imeOptions="actionDone" />
 
@@ -43,7 +44,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="+"
-            android:textSize="125dp"
+            android:textSize="@dimen/button_text_home"
             android:textColor="#FF6E40" />
 
         <Button
@@ -54,7 +55,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="-"
-            android:textSize="125dp"
+            android:textSize="@dimen/button_text_home"
             android:textColor="#FF6E40" />
     </LinearLayout>
 
@@ -73,7 +74,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="x"
-            android:textSize="125dp"
+            android:textSize="@dimen/button_text_home"
             android:clickable="true"
             android:textColor="#FF6E40" />
 
@@ -85,7 +86,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="÷"
-            android:textSize="125dp"
+            android:textSize="@dimen/button_text_home"
             android:textColor="#FF6E40" />
     </LinearLayout>
 

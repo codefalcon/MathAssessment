@@ -5,9 +5,11 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -360,7 +362,17 @@ public class TakeTest extends Activity implements View.OnClickListener {
     }
 
     void setupSound() {
-        soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        } else {
+            SoundPool.Builder sb = new SoundPool.Builder();
+            sb.setAudioAttributes(new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
+            sb.setMaxStreams(2);
+            soundPool = sb.build();
+        }
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId,

@@ -11,7 +11,7 @@
         android:background="@color/primary_100"
         android:gravity="center"
         android:layout_alignParentTop="true"
-        android:textSize="30sp"
+        android:textSize="@dimen/fragment_header"
         android:alpha="0.54"
         android:text="@string/assignment_list" />
 

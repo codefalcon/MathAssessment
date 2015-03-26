@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/primary_100"
         android:gravity="center"
-        android:textSize="30sp"
+        android:textSize="@dimen/fragment_header"
         android:alpha="0.54"
         android:text="@string/answer_list" />
 
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:background="@color/primary_100"
         android:gravity="center"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:alpha="0.54"
         android:text="@string/select_answer" />
 </LinearLayout>

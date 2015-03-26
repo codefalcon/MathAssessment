@@ -11,7 +11,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="reversePortrait"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +24,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_taketest"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="reversePortrait">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -38,7 +38,8 @@
         <activity
             android:name=".Summary"
             android:label="@string/title_activity_summary"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.eurekachild.mathassessment.MainActivity" />

@@ -24,21 +24,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         // Perform action on click
         EditText name = (EditText) findViewById(R.id.etName);
+        boolean isNameEmpty = false;
+
         switch (v.getId()) {
             case R.id.butAdd:
-                if (name.getText().toString().isEmpty()) break;
+                if (name.getText().toString().isEmpty()) {
+                    isNameEmpty = true;
+                    break;
+                }
                 launchTakeTestActivity(name.getText().toString(), ADD);
                 break;
             case R.id.butSub:
-                if (name.getText().toString().isEmpty()) break;
+                if (name.getText().toString().isEmpty()) {
+                    isNameEmpty = true;
+                    break;
+                }
                 launchTakeTestActivity(name.getText().toString(), SUB);
                 break;
             case R.id.butMul:
-                if (name.getText().toString().isEmpty()) break;
+                if (name.getText().toString().isEmpty()) {
+                    isNameEmpty = true;
+                    break;
+                }
                 launchTakeTestActivity(name.getText().toString(), MUL);
                 break;
             case R.id.butDiv:
-                if (name.getText().toString().isEmpty()) break;
+                if (name.getText().toString().isEmpty()) {
+                    isNameEmpty = true;
+                    break;
+                }
                 launchTakeTestActivity(name.getText().toString(), DIV);
                 break;
             case R.id.butSummary:
@@ -49,7 +63,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
         }
-        Toast.makeText(MainActivity.this, "Please enter student name.", Toast.LENGTH_SHORT).show();
+        if (isNameEmpty) {
+            Toast.makeText(MainActivity.this, "Please enter student name.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchTakeTestActivity(String name, int operator) {

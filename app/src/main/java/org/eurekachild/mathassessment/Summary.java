@@ -17,9 +17,9 @@ public class Summary extends Activity implements AssignmentListFragment.OnAssign
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
-        ActionBar ab = getActionBar();
-        if (ab != null)
-            ab.setDisplayHomeAsUpEnabled(true);
+//        ActionBar ab = getActionBar();
+//        if (ab != null)
+//            ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

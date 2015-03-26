@@ -14,7 +14,7 @@
         android:id="@+id/rv1"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="@integer/question_weight">
 
         <TextView
             android:id="@+id/textview1"
@@ -31,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="35sp"
-            android:text="" />
+            android:textSize="@dimen/text_question"
+            android:text="128" />
 
         <TextView
             android:id="@+id/tvOperand2"
@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvOperand1"
             android:layout_alignRight="@+id/tvOperand1"
-            android:textSize="35sp"
-            android:text="" />
+            android:textSize="@dimen/text_question"
+            android:text="123" />
 
         <TextView
             android:id="@+id/tvOperator"
@@ -49,8 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvOperand1"
             android:layout_toLeftOf="@+id/tvOperand1"
-            android:textSize="35sp"
-            android:text="" />
+            android:textSize="@dimen/text_question"
+            android:text="+" />
 
         <LinearLayout
             android:id="@+id/linearlayout1"
@@ -101,7 +101,7 @@
         android:layout_below="@id/rv1"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:columnCount="3"
+        android:columnCount="@integer/keypad_columns"
         android:orientation="horizontal">
 
         <Button
