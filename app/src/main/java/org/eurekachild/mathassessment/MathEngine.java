@@ -14,6 +14,7 @@ public class MathEngine {
     int currentType;
     int currentOperator;
     boolean isInit;
+    boolean isLevelPass;
 
     Random r = new Random();
 
@@ -22,6 +23,7 @@ public class MathEngine {
         currentLevel = 0;
         currentType = 0;
         isInit = true;
+        isLevelPass = true;
     }
 
     public void initialize(int operator) {
@@ -29,6 +31,7 @@ public class MathEngine {
         currentLevel = 0;
         currentType = 0;
         isInit = true;
+        isLevelPass = true;
     }
 
     public boolean hasNextQuestion(boolean isPrevRespCorrect) {
@@ -61,13 +64,14 @@ public class MathEngine {
                 case 1://if Type 1, same level-> generate type 2
                 case 3: //type 3, same level->generate type 4
                 case 4: //type 4, same level->generate type 5
+                    if (!isPrevRespCorrect) isLevelPass = false;
                     currentType++;
                     newQA = generateAddQn(currentType);
                     break;
                 case 2://type 2 has to be correct to generate type 3 + level up
                 case 5://type5 has to be correct to generate type 6 + level up
                 case 6://type6 has to be correct to generate type 7 + level up
-                    if (isPrevRespCorrect) {
+                    if (isPrevRespCorrect && isLevelPass) {
                         currentType++;
                         currentLevel++;
                         newQA = generateAddQn(currentType);
@@ -177,6 +181,7 @@ public class MathEngine {
 
                 case 3: //type 3, same level->generate type 4
                 case 4: //type 4, same level->generate type 5
+                    if (!isPrevRespCorrect) isLevelPass = false;
                     currentType++;
                     newQA = generateSubQn(currentType);
                     break;
@@ -184,7 +189,7 @@ public class MathEngine {
                 case 2://type 2 has to be correct to generate type 3 + level up
                 case 5://type5 has to be correct to generate type 6 + level up
                 case 6://type6 has to be correct to generate type 7 + level up
-                    if (isPrevRespCorrect) {
+                    if (isPrevRespCorrect && isLevelPass) {
                         currentType++;
                         currentLevel++;
                         newQA = generateSubQn(currentType);
@@ -280,6 +285,7 @@ public class MathEngine {
 
                 case 2://type 2, same level->generate type 3
                 case 4: //type 4, same level->generate type 5
+                    if (!isPrevRespCorrect) isLevelPass = false;
                     currentType++;
                     newQA = generateMulQn(currentType);
                     break;
@@ -287,7 +293,7 @@ public class MathEngine {
                 case 3: //type 3 has to be correct to generate type 4 + level up
                 case 5://type 5 has to be correct to generate type 6 + level up
                 case 6://type 6 has to be correct to generate type 7 + level up
-                    if (isPrevRespCorrect) {
+                    if (isPrevRespCorrect && isLevelPass) {
                         currentType++;
                         currentLevel++;
                         newQA = generateMulQn(currentType);
@@ -423,6 +429,7 @@ public class MathEngine {
 
                 case 3: //type 3, same level->generate type 4
                 case 5: //type 5, same level->generate type 6
+                    if (!isPrevRespCorrect) isLevelPass = false;
                     currentType++;
                     newQA = generateDivQn(currentType);
                     break;
@@ -430,7 +437,7 @@ public class MathEngine {
                 case 2://type 2 has to be correct to generate type 3 + level up
                 case 4://type 4 has to be correct to generate type 5 + level up
                 case 6://type 6 has to be correct to generate type 7 + level up
-                    if (isPrevRespCorrect) {
+                    if (isPrevRespCorrect && isLevelPass) {
                         currentType++;
                         currentLevel++;
                         newQA = generateDivQn(currentType);

@@ -193,7 +193,7 @@ public class TakeTest extends Activity implements View.OnClickListener {
                             t1.setText("Remainder →");
                             text.setText("");
                             quotient = Integer.parseInt(ans);
-                            Toast.makeText(TakeTest.this, "Enter Remainder", Toast.LENGTH_LONG).show();
+                            Toast.makeText(TakeTest.this, "Enter Remainder", Toast.LENGTH_SHORT).show();
                             break;
                         } else {
                             qr = new QuestionResponse(displayedQuestion, quotient, Integer.parseInt(ans));
@@ -220,13 +220,13 @@ public class TakeTest extends Activity implements View.OnClickListener {
                     if (qa != null) {
                         displayQuestion(qa);
                     } else {
-                        Toast.makeText(TakeTest.this, "Well done!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(TakeTest.this, "Well done!", Toast.LENGTH_SHORT).show();
                         // Start lengthy operation in a background thread
                         new Thread(new Runnable() {
                             public void run() {
                                 writeAssignmentToDb(assignment, displayedQuestion.operator);
                                 deleteAssignmentAboveLimit();
-                                readStudentInfoFromDb();
+//                                readStudentInfoFromDb();
 //                                while (mProgressStatus < 100) {
 //                                    mProgressStatus = doWork();
 //
@@ -243,7 +243,7 @@ public class TakeTest extends Activity implements View.OnClickListener {
                     }
                     text.setText("");
                 } else
-                    Toast.makeText(TakeTest.this, "Please enter your answer", Toast.LENGTH_LONG).show();
+                    Toast.makeText(TakeTest.this, "Please enter your answer", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
