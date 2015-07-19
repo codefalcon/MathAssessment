@@ -23,6 +23,7 @@
             android:name=".TakeTest"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_taketest"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
             <meta-data

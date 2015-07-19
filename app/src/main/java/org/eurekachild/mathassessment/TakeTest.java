@@ -12,11 +12,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +40,10 @@ public class TakeTest extends Activity implements View.OnClickListener {
     int quotient;
 
     AssignmentDbHelper dbHelper;
+
+    private View.OnTouchListener otl;
+    EditText etCurrentInputDigit;
+    EditText etU, etT, etH, etM; //edit text for units, tens, hundreds and thousands place respectively
 
     public static class QuestionAnswer {
         private static int id = 7001;
@@ -142,46 +149,43 @@ public class TakeTest extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        TextView text = (TextView) findViewById(R.id.tvAnswer);
-
+        EditText etext = etCurrentInputDigit;
         switch (v.getId()) {
             case R.id.button0:
-                text.setText("0" + text.getText());
+                etext.setText("0");
                 break;
             case R.id.button1:
-                text.setText("1" + text.getText());
+                etext.setText("1");
                 break;
             case R.id.button2:
-                text.setText("2" + text.getText());
+                etext.setText("2");
                 break;
             case R.id.button3:
-                text.setText("3" + text.getText());
+                etext.setText("3");
                 break;
             case R.id.button4:
-                text.setText("4" + text.getText());
+                etext.setText("4");
                 break;
             case R.id.button5:
-                text.setText("5" + text.getText());
+                etext.setText("5");
                 break;
             case R.id.button6:
-                text.setText("6" + text.getText());
+                etext.setText("6");
                 break;
             case R.id.button7:
-                text.setText("7" + text.getText());
+                etext.setText("7");
                 break;
             case R.id.button8:
-                text.setText("8" + text.getText());
+                etext.setText("8");
                 break;
             case R.id.button9:
-                text.setText("9" + text.getText());
+                etext.setText("9");
                 break;
             case R.id.buttonBkspc:
-                String answer = (String) text.getText();
-                if (!answer.isEmpty())
-                    text.setText(answer.substring(1, answer.length()));
+                etext.setText("");
                 break;
             case R.id.buttonSubmit:
-                String ans = (String) text.getText();
+                String ans = validateAnswer();
                 QuestionResponse qr;
                 if (!ans.isEmpty()) {
                     if (displayedQuestion.operator == MainActivity.DIV) {
@@ -191,7 +195,7 @@ public class TakeTest extends Activity implements View.OnClickListener {
                             t1.setText("← Remainder");
                             t1 = (TextView) findViewById(R.id.textview124);
                             t1.setText("Remainder →");
-                            text.setText("");
+                            clearAnswerText();
                             quotient = Integer.parseInt(ans);
                             Toast.makeText(TakeTest.this, "Enter Remainder", Toast.LENGTH_SHORT).show();
                             break;
@@ -241,11 +245,51 @@ public class TakeTest extends Activity implements View.OnClickListener {
                         }).start();
                         finish();
                     }
-                    text.setText("");
-                } else
-                    Toast.makeText(TakeTest.this, "Please enter your answer", Toast.LENGTH_SHORT).show();
+                    clearAnswerText();
+                    etU.requestFocus();
+                    etCurrentInputDigit = etU;
+                } else {
+                    Toast.makeText(TakeTest.this, "Please enter a proper answer", Toast.LENGTH_SHORT).show();
+                    playSound(0);
+                }
                 break;
         }
+    }
+
+    private String validateAnswer() {
+        int res = 0;
+        String sU = etU.getText().toString().trim();
+        String sT = etT.getText().toString().trim();
+        String sH = etH.getText().toString().trim();
+        String sM = etM.getText().toString().trim();
+
+        if (!sU.isEmpty()) res = 1;
+        if (!sT.isEmpty()) res += 2;
+        if (!sH.isEmpty()) res += 4;
+        if (!sM.isEmpty()) res += 8;
+
+        if (res == 1 || res == 3 || res == 7 || res == 15) {
+            switch (res) {
+                case 1:
+                    return sU;
+                case 3:
+                    return sT + sU;
+                case 7:
+                    return sH + sT + sU;
+                case 15:
+                    return sM + sH + sT + sU;
+                default:
+                    return "";
+            }
+        } else
+            return "";
+    }
+
+    void clearAnswerText() {
+        etU.setText("");
+        etT.setText("");
+        etH.setText("");
+        etM.setText("");
     }
 
     private void displayQuestion(QuestionAnswer qa) {
@@ -324,9 +368,26 @@ public class TakeTest extends Activity implements View.OnClickListener {
                 break;
         }
 
+        //Do this before assigning listeners
+        otl = new View.OnTouchListener()
+
+        {
+            public boolean onTouch(View v, MotionEvent event) {
+                EditText et = (EditText) v;
+                etCurrentInputDigit = et;
+                int inType = et.getInputType();
+                et.setInputType(InputType.TYPE_NULL);
+                et.onTouchEvent(event);
+                et.setInputType(inType);
+                return true; // the listener has consumed the event
+            }
+        };
+
         setupListeners();
         setupSound();
 
+        //set focus
+        etU.requestFocusFromTouch();
         dbHelper = AssignmentDbHelper.getHelper(getApplicationContext());
         //SQLiteDatabase db = dbHelper.getWritableDatabase();
         //dbHelper.onDowngrade(db,1,2);
@@ -359,6 +420,24 @@ public class TakeTest extends Activity implements View.OnClickListener {
         but.setOnClickListener(this);
         but = (Button) findViewById(R.id.buttonSubmit);
         but.setOnClickListener(this);
+
+        //Answer text area
+        EditText editText = (EditText) findViewById(R.id.tvAnswerThousands);
+        editText.setOnTouchListener(otl);
+        etM = editText;
+
+        editText = (EditText) findViewById(R.id.tvAnswerHundreds);
+        editText.setOnTouchListener(otl);
+        etH = editText;
+
+        editText = (EditText) findViewById(R.id.tvAnswerTens);
+        editText.setOnTouchListener(otl);
+        etT = editText;
+
+        editText = (EditText) findViewById(R.id.tvAnswerUnits);
+        editText.setOnTouchListener(otl);
+        etU = editText;
+        etCurrentInputDigit = editText;
     }
 
     void setupSound() {

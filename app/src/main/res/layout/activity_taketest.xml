@@ -69,18 +69,59 @@
                 android:alpha="0.54"
                 android:gravity="right|center_vertical" />
 
-            <TextView
-                android:id="@+id/tvAnswer"
+            <EditText
+                android:id="@+id/tvAnswerThousands"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@color/accent_100"
+                android:background="@drawable/border"
                 android:gravity="center"
-                android:layout_weight="4"
-                android:maxLength="4"
+                android:layout_weight="1"
+                android:maxLength="1"
                 android:text=""
                 android:textColor="#000"
                 android:textSize="@dimen/text_answer" />
 
+            <EditText
+                android:id="@+id/tvAnswerHundreds"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border"
+                android:gravity="center"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:cursorVisible="true"
+                android:layout_weight="1"
+                android:maxLength="1"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="@dimen/text_answer" />
+
+            <EditText
+                android:id="@+id/tvAnswerTens"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border"
+                android:gravity="center"
+                android:focusable="true"
+                android:layout_weight="1"
+                android:maxLength="1"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="@dimen/text_answer" />
+
+            <EditText
+                android:id="@+id/tvAnswerUnits"
+                android:inputType="none"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border"
+                android:gravity="center"
+                android:focusable="true"
+                android:layout_weight="1"
+                android:maxLength="1"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="@dimen/text_answer" />
             <TextView
                 android:id="@+id/textview123"
                 android:layout_width="0dp"
@@ -170,7 +211,7 @@
             android:id="@+id/buttonBkspc"
             android:layout_columnSpan="2"
             android:layout_gravity="fill"
-            android:text="BkSpc" />
+            android:text="Del" />
 
         <Button
             android:textSize="@dimen/button_number_keypad"
