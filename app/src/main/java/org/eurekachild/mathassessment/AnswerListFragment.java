@@ -132,6 +132,8 @@ public class AnswerListFragment extends ListFragment
         ans.append("Correct Answer: ").append(c.getInt(index1));
         if (operator.compareTo("÷") == 0)
             ans.append("(").append(c.getInt(index2)).append(")");
+        ans.append("\n");
+        ans.append(getAnswerType(operator, position));
 
         try {
             TextView text = (TextView) getView().findViewById(R.id.tvCorrectAnswer);
@@ -140,7 +142,31 @@ public class AnswerListFragment extends ListFragment
         } catch (NullPointerException e) {
 
         }
+    }
 
+    public String getAnswerType(String operator, int position) {
+        String addType[] = {"1D + 1D", "2D + 2D w/o carry", "2D+1D with or w/o carry",
+                "2D+2D (with zero ending )", "2D+2D with carry", "Random 2D problem", "3D + 3D with 2 carry overs"};
+        String subType[] = {"1D-1D", "Special 2D-1D (with answer in 1D)", "2D-2D w/o borrow",
+                "2D-2D with zero ending", "2D-2D with borrow", "Random 2D problem", "3D-3D with two levels borrow"};
+        String mulType[] = {"1Dx1D (<=5)", "Any 1Dx1D", "2Dx1D w/o carry", "2Dx1D with carry",
+                "2Dx1D or 2Dx2D with zero ending", " 2Dx2D problem with carry", "Random 2D x 2D (or 2Dx1D)"};
+        String divType[] = {"2D/1D no remainder", "2D/1D with remainder", "3D/1D without remainder", "3D/1D with remainder",
+                "3D/1D with zero in quotient at the end", "3D/1D with zero in quotient in the middle",
+                "3D/1D with zero in quotient and dividend "};
+
+        switch (operator) {
+            case "+":
+                return addType[position];
+            case "-":
+                return subType[position];
+            case "x":
+                return mulType[position];
+            case "÷":
+                return divType[position];
+            default:
+                return "";
+        }
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

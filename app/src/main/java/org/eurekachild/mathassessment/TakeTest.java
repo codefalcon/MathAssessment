@@ -246,8 +246,6 @@ public class TakeTest extends Activity implements View.OnClickListener {
                         finish();
                     }
                     clearAnswerText();
-                    etU.requestFocus();
-                    etCurrentInputDigit = etU;
                 } else {
                     Toast.makeText(TakeTest.this, "Please enter a proper answer", Toast.LENGTH_SHORT).show();
                     playSound(0);
@@ -290,6 +288,9 @@ public class TakeTest extends Activity implements View.OnClickListener {
         etT.setText("");
         etH.setText("");
         etM.setText("");
+
+        etU.requestFocus();
+        etCurrentInputDigit = etU;
     }
 
     private void displayQuestion(QuestionAnswer qa) {
@@ -554,7 +555,7 @@ public class TakeTest extends Activity implements View.OnClickListener {
     }
 
     boolean deleteAssignmentAboveLimit() {
-        int LIMIT = 10;
+        int LIMIT = 18;
 
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
